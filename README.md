@@ -32,415 +32,167 @@
 
 ## Introduction
 
-Flask as you've learned it is already a great tool for building RESTful APIs,
-but it's important to always seek out the best tools for the job. There are
-dozens of extensions designed exclusively for use with Flask, and one,
-[Flask-RESTful][frest], makes it _very_ easy to build RESTful APIs.
+In this lab, we'll be building an API for a plant store! In addition to our
+usual Rails code, there is code for a React frontend application in the `client`
+directory.
+
+The code for the frontend application is done. Your job is to create the Rails
+API so that the `fetch` requests on the frontend work successfully.
 
 ***
 
-## Flask-RESTful Example
+## Instructions
 
-Let's take a look at a bare-bones API built with Flask-RESTful:
-
-```py
-# example only
-
-from flask import Flask
-from flask_restful import Api, Resource
-
-app = Flask(__name__)
-api = Api(app)
-
-class Newsletter(Resource):
-    def get(self):
-        return {"newsletter": "it's a beautiful 108 out in Austin today"}
-
-api.add_resource(Newsletter, '/newsletters')
-
-if __name__ == '__main__':
-    app.run()
-
-```
-
-We can run this app just like any other- with `python app.py` or `flask run`-
-then navigate to the client in order to access `Newsletter`'s resources. Since
-the data here is returned in such a simple format, we can access it most easily
-from the command line with `curl`:
+The React application is in the `client` directory. To set it up, from the root
+directory, run:
 
 ```console
-$ curl http://127.0.0.1:5000
-# => {"newsletter: "it's a beautiful 108 out in Austin today"}
+$ npm install --prefix client
 ```
 
-So what's going on here?
+Using `--prefix client` will run the npm command within the `client` directory.
 
-### `Api` and `Resource`
+To set up your backend, run:
 
-Flask-RESTful's `Api` class is the constructor for your RESTful API as a whole.
-It is initialized with a Flask application instance and populates with resources
-later on. These resources all inherit from the `Resource` class, which includes
-conditions for throwing exceptions and base methods for each HTTP method that
-explicitly disallow them.
+```console
+$ bundle install
+```
 
-When `Resource` subclasses are added to the `Api` instance with
-`add_resource()`, it uses the newly defined HTTP verb instance methods to
-determine which routes to create at the provided URL.
+To see how the React application and Rails API are interacting, you can run the
+Rails application in one terminal by running:
 
-`Api` and `Resource` aren't the only classes available to us through
-Flask-RESTful, but they're more than enough to get us started.
+```console
+$ rails s
+```
 
-### What's Missing?
+Then, [open another terminal][new terminal] and run React:
 
-Because the `Resource` class and `create_resource` methods handle tasks normally
-carried out by the `@app.route()` decorator, we don't need to include the
-decorator itself. Remember though: if you add any non-RESTful views to your app,
-you still need `app.route()`!
+```console
+$ npm start --prefix client
+```
+
+[new terminal]: https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-terminals
+
+Each application will run on its own port on `localhost`:
+
+- React: [http://localhost:4000](http://localhost:4000)
+- Rails: [http://localhost:3000](http://localhost:3000)
+
+Take a look through the components in the `client/src/components/` folder to get
+a feel for what our app does. Note that the `fetch` requests in the frontend (in
+`NewPlantForm` and `PlantPage`) don't include the backend domain:
+
+```js
+fetch("/plants");
+// instead of fetch("http://localhost:3000/plants")
+```
+
+This is because we are [proxying][create-react-app proxying] these requests to
+our API.
 
 ***
 
-## Getting Started
+## Deliverables
 
-Enter your virtual environment with `pipenv install && pipenv shell`. Open
-`newsletters/app.py` and enter the following code to create a RESTful index
-page:
+### Model
 
-```py
-#!/usr/bin/env python3
+Create a `Plant` model that matches this specification:
 
-from flask import Flask, jsonify, request, make_response
-from flask_migrate import Migrate
-from flask_restful import Api, Resource
+| Column Name | Data Type |
+| ----------- | --------- |
+| name        | string    |
+| image       | string    |
+| price       | decimal   |
 
-from models import db, Newsletter
+**If you use a Rails generator, don't forget to pass the `--no-test-framework`
+argument!**
 
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/newsletters.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+After creating the `Plant` model, you can run `rails db:migrate db:seed` to run
+your migration and add some sample data to your database.
 
-migrate = Migrate(app, db)
-db.init_app(app)
+Check your progress by running `rails c` and verifying that the plants were
+created successfully!
 
-api = Api(app)
+### Routes
 
-class Index(Resource):
+Your API should have the following routes as well as the associated controller
+actions that return the appropriate JSON data:
 
-    def get(self):
-        
-        response_dict = {
-            "index": "Welcome to the Newsletter RESTful API",
-        }
-        
-        response = make_response(
-            jsonify(response_dict),
-            200
-        )
+#### Index Route
 
-        return response
+```txt
+GET /plants
 
-api.add_resource(Index, '/')
 
-```
-
-Run `flask run` from the `newsletters/` directory and you should see the
-following at [http://127.0.0.1:5000](http://127.0.0.1:5000):
-
-```json
-{
-  "index": "Welcome to the Newsletter RESTful API"
-}
-```
-
-Congratulations on creating your first RESTful API endpoint!
-
-You'll notice that there are quite a few imports and lines of configuration that
-relate to databases- we'll be working with one in this lesson, but the models
-and migrations have already been created for you. When you're ready, run
-`flask db upgrade` to create the database and `python seed.py` to seed it with
-fake data.
-
-***
-
-## Retrieving Records with Flask-RESTful
-
-Our index is a perfectly good example of a successful `GET` request, but it
-doesn't truly allow other people's applications to interact with our newsletter
-database. Let's set up another route, `/newsletters`, that returns all of the
-records from the `newsletters` table. Open `newsletters/app.py` and enter the
-following beneath your `Index` view:
-
-```py
-# newsletters/app.py
-
-class Newsletters(Resource):
-
-    def get(self):
-
-        response_dict_list = [n.to_dict() for n in Newsletter.query.all()]
-
-        response = make_response(
-            jsonify(response_dict_list),
-            200,
-        )
-
-        return response
-
-api.add_resource(Newsletters, '/newsletters')
-
-```
-
-While the outside structure of views in Flask-RESTful is quite different from
-vanilla Flask, the internal structure is virtually the same. We can write each
-of our views- for create, retrieve, update, and delete- just as we did before.
-The main difference here is that instead of each HTTP verb getting a code block
-inside of a view function, they each get an instance method inside of a
-`Resource` class.
-
-Run `flask run` from the `newsletters/` directory and you should see something
-similar to the following at [http://127.0.0.1:5000/newsletters](
-http://127.0.0.1:5000/newsletters):
-
-```json
+Response Body
+-------
 [
   {
-    "body": "Create southern girl news. Image interesting mean professor federal agree. Clearly before seat threat during role provide.",
-    "edited_at": null,
     "id": 1,
-    "published_at": "2022-09-21 18:35:17",
-    "title": "Establish they."
+    "name": "Aloe",
+    "image": "./images/aloe.jpg",
+    "price": 11.50
   },
   {
-    "body": "Really attack we ground production game. Late agency example local break start. Tell leader new above just before. Participant southern thousand win group dream reason.",
-    "edited_at": null,
     "id": 2,
-    "published_at": "2022-09-21 18:35:17",
-    "title": "Plan wonder manage."
-  },
-  {
-    "body": "Will suffer choice impact. Audience happen write feel represent. Woman discover million kitchen. Although make little affect.",
-    "edited_at": null,
-    "id": 3,
-    "published_at": "2022-09-21 18:35:17",
-    "title": "Meet cut stuff."
-  },
-  ...
+    "name": "ZZ Plant",
+    "image": "./images/zz-plant.jpg",
+    "price": 25.98
+  }
 ]
 ```
 
-***
+#### Show Route
 
-## Creating Records with Flask-RESTful
+```txt
+GET /plants/:id
 
-Let's move onto creating records with `POST` requests. Reopen
-`newsletters/app.py` and add the following to the bottom of the `Newsletter`
-class:
 
-```py
-# newsletters/app.py
-
-def post(self):
-    
-    new_record = Newsletter(
-        title=request.form['title'],
-        body=request.form['body'],
-    )
-
-    db.session.add(new_record)
-    db.session.commit()
-
-    response_dict = new_record.to_dict()
-
-    response = make_response(
-        jsonify(response_dict),
-        201,
-    )
-
-    return response
-
-```
-
-> **NOTE: We do NOT need to run the `add_resource()` method twice, as the `GET`
-> and `POST` routes are accessible through the same `Resource` and URL.**
-
-There's nothing you haven't seen before here: we retrieve form data through the
-request context, use it to create a new Newsletter record, commit that record to
-the database, then return it to the client with a 201 status code to denote that
-it was created successfully.
-
-Try it out for yourself: open Postman and navigate to
-[http://127.0.0.1:5000/newsletters](http://127.0.0.1:5000/newsletters). Change
-the request method to `POST`, edit the `Body > form-data` with a title and body,
-then hit submit. You should see a response similar to the following:
-
-```json
+Response Body
+------
 {
-    "body": "This is the body of the newsletter entitled \"Mr. Title\".",
-    "edited_at": null,
-    "id": 51,
-    "published_at": "2022-09-21 19:16:31",
-    "title": "Mr. Title"
+  "id": 1,
+  "name": "Aloe",
+  "image": "./images/aloe.jpg",
+  "price": 11.50
 }
 ```
 
-***
+#### Create Route
 
-## Building Another Resource and Retrieving a Single Record
+In your controller's `create` action, use strong params when creating the new
+`Plant` object.
 
-We won't always want to read _every_ newsletter, so we should probably build
-a route to get a single record back from the database. There are a couple
-things to consider before we begin:
+```txt
+POST /plants
 
-1. A `GET` route already exists under `newsletters/`.
-2. Retrieving a single record means that we need some sort of **id**entifier.
 
-This means that we need to build a new `Resource` for this endpoint, and that
-it should include the `id` in the URL. Let's give it a shot!
+Headers
+-------
+Content-Type: application/json
 
-```py
-# newsletters/app.py
 
-class NewsletterByID(Resource):
-
-    def get(self, id):
-
-        response_dict = Newsletter.query.filter_by(id=id).first().to_dict()
-
-        response = make_response(
-            jsonify(response_dict),
-            200,
-        )
-
-        return response
-
-api.add_resource(NewsletterByID, '/newsletters/<int:id>')
-
-```
-
-Only two differences between this and our original `GET` route:
-
-1. We need to include `id` in our method's arguments and the resource URL.
-2. We need to chain some commands together to get the record with the provided
-   `id`.
-
-Check out this lesson's finished product: open Postman and navigate to
-[http://127.0.0.1:5000/newsletters/20](http://127.0.0.1:5000/newsletters/20).
-Make sure that your request method is `GET`, then click submit. You should see
-something similar to the following:
-
-```json
+Request Body
+------
 {
-    "body": "College tax head change. Claim exactly because choose. Church edge center across test stock.",
-    "edited_at": null,
-    "id": 20,
-    "published_at": "2022-09-21 18:35:17",
-    "title": "Court probably not."
+  "name": "Aloe",
+  "image": "./images/aloe.jpg",
+  "price": 11.50
+}
+
+
+Response Body
+-------
+{
+  "id": 1,
+  "name": "Aloe",
+  "image": "./images/aloe.jpg",
+  "price": 11.50
 }
 ```
 
-***
-
-## Conclusion
-
-Flask-RESTful is a very simple tool that allows us to properly and effectively
-use HTTP request methods in our applications. Like other extensions, it reduces
-the amount of code you have to write to accomplish common tasks- and if you
-don't need to accomplish those common tasks, you can just leave it out!
-
-***
-
-## Solution Code
-
-```py
-#!/usr/bin/env python3
-
-from flask import Flask, jsonify, request, make_response
-from flask_migrate import Migrate
-from flask_restful import Api, Resource
-
-from models import db, Newsletter
-
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/newsletters.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
-
-migrate = Migrate(app, db)
-db.init_app(app)
-
-api = Api(app)
-
-class Index(Resource):
-
-    def get(self):
-        
-        response_dict = {
-            "index": "Welcome to the Newsletter RESTful API",
-        }
-        
-        response = make_response(
-            jsonify(response_dict),
-            200,
-        )
-
-        return response
-
-api.add_resource(Index, '/')
-
-class Newsletters(Resource):
-
-    def get(self):
-        
-        response_dict_list = [n.to_dict() for n in Newsletter.query.all()]
-
-        response = make_response(
-            jsonify(response_dict_list),
-            200,
-        )
-
-        return response
-
-    def post(self):
-        
-        new_record = Newsletter(
-            title=request.form['title'],
-            body=request.form['body'],
-        )
-
-        db.session.add(new_record)
-        db.session.commit()
-
-        response_dict = new_record.to_dict()
-
-        response = make_response(
-            jsonify(response_dict),
-            201,
-        )
-
-        return response
-
-api.add_resource(Newsletters, '/newsletters')
-
-class NewsletterByID(Resource):
-
-    def get(self, id):
-
-        response_dict = Newsletter.query.filter_by(id=id).first().to_dict()
-
-        response = make_response(
-            jsonify(response_dict),
-            200,
-        )
-
-        return response
-
-api.add_resource(NewsletterByID, '/newsletters/<int:id>')
-
-
-if __name__ == '__main__':
-    app.run()
-
-```
+Once all the tests are passing, start up the React app and explore the
+functionality to see how the routes you created are being used.
 
 ## Resources
 
