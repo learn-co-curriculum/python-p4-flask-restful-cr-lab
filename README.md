@@ -35,16 +35,19 @@
 ## Introduction
 
 In this lab, we'll be building an API for a plant store! In addition to our
-usual Flask code, there is code for a React frontend application in the `client`
+usual Rails code, there is code for a React frontend application in the `client`
 directory.
 
-The code for the frontend application is done. Your job is to create the Flask
+The code for the frontend application is done. Your job is to create the Rails
 API so that the `fetch` requests on the frontend work successfully.
 
 ***
 
 ## Instructions
+## Instructions
 
+The React application is in the `client` directory. To set it up, from the root
+directory, run:
 The React application is in the `client` directory. To set it up, from the root
 directory, run:
 
@@ -57,6 +60,14 @@ Using `--prefix client` will run the npm command within the `client` directory.
 To set up your backend, run:
 
 ```console
+$ bundle install
+```
+
+To see how the React application and Rails API are interacting, you can run the
+Rails application in one terminal by running:
+
+```console
+$ rails s
 $ pipenv install; pipenv shell
 ```
 
