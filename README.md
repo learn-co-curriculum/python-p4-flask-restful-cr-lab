@@ -33,7 +33,7 @@
 ## Introduction
 
 In this lab, we'll be building an API for a plant store! In addition to our
-usual Rails code, there is code for a React frontend application in the `client`
+usual Flask code, there is code for a React frontend application in the `client`
 directory.
 
 The code for the frontend application is done. Your job is to create the Rails

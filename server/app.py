@@ -7,9 +7,9 @@ from flask_restful import Api, Resource
 from models import db, Plant
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/newsletters.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/plants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+app.json.compact = True
 
 migrate = Migrate(app, db)
 db.init_app(app)
