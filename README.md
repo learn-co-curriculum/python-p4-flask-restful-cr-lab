@@ -36,7 +36,7 @@ In this lab, we'll be building an API for a plant store! In addition to our
 usual Flask code, there is code for a React frontend application in the `client`
 directory.
 
-The code for the frontend application is done. Your job is to create the Rails
+The code for the frontend application is done. Your job is to create the Flask
 API so that the `fetch` requests on the frontend work successfully.
 
 ***
@@ -52,17 +52,17 @@ $ npm install --prefix client
 
 Using `--prefix client` will run the npm command within the `client` directory.
 
-To set up your backend, run:
+To set up your backend, enter the `server/` directory and run:
 
 ```console
-$ bundle install
+$ pipenv install && pipenv shell
 ```
 
-To see how the React application and Rails API are interacting, you can run the
-Rails application in one terminal by running:
+To see how the React application and Flask API are interacting, you can run the
+Flask application in one terminal by running:
 
 ```console
-$ rails s
+$ flask run
 ```
 
 Then, [open another terminal][new terminal] and run React:
@@ -76,7 +76,7 @@ $ npm start --prefix client
 Each application will run on its own port on `localhost`:
 
 - React: [http://localhost:4000](http://localhost:4000)
-- Rails: [http://localhost:3000](http://localhost:3000)
+- Flask: [http://localhost:3000](http://localhost:5000)
 
 Take a look through the components in the `client/src/components/` folder to get
 a feel for what our app does. Note that the `fetch` requests in the frontend (in
@@ -84,11 +84,10 @@ a feel for what our app does. Note that the `fetch` requests in the frontend (in
 
 ```js
 fetch("/plants");
-// instead of fetch("http://localhost:3000/plants")
+// instead of fetch("http://localhost:5000/plants")
 ```
 
-This is because we are [proxying][create-react-app proxying] these requests to
-our API.
+This is because we are [proxying][proxying] these requests to our Flask API.
 
 ***
 
@@ -104,14 +103,8 @@ Create a `Plant` model that matches this specification:
 | image       | string    |
 | price       | decimal   |
 
-**If you use a Rails generator, don't forget to pass the `--no-test-framework`
-argument!**
-
-After creating the `Plant` model, you can run `rails db:migrate db:seed` to run
+After creating the `Plant` model, you can run `python seed.py` to run
 your migration and add some sample data to your database.
-
-Check your progress by running `rails c` and verifying that the plants were
-created successfully!
 
 ### Routes
 
@@ -191,6 +184,9 @@ Response Body
 }
 ```
 
+> **Note: When adding image URLs, you will need to use absolute URLs from the
+> internet; we have only uploaded the two images to this project directory.**
+
 Once all the tests are passing, start up the React app and explore the
 functionality to see how the routes you created are being used.
 
@@ -199,5 +195,7 @@ functionality to see how the routes you created are being used.
 - [What RESTful Actually Means](https://codewords.recurse.com/issues/five/what-restful-actually-means)
 - [Flask-RESTful][frest]
 - [HTTP request methods - Mozilla](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods)
+- [Proxying API Requests in Development - React][proxying]
 
 [frest]: https://flask-restful.readthedocs.io/en/latest/
+[proxying]: https://create-react-app.dev/docs/proxying-api-requests-in-development/
