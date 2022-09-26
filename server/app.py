@@ -7,7 +7,7 @@ from flask_restful import Api, Resource
 from models import db, Plant
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/newsletters.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db/plants.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = True
 

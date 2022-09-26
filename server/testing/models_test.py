@@ -34,7 +34,8 @@ class TestPlant:
             p = Plant(name="Douglas Fir")
             db.session.add(p)
             db.session.commit()
-            p = Plant.query.filter_by(name="Douglas Fir").first().to_dict()
+            p_dict = Plant.query.filter_by(name="Douglas Fir").first().to_dict()
+            assert((type(p_dict) == dict) and (p_dict["name"] == "Douglas Fir"))
         
             db.session.delete(p)
             db.session.commit()
