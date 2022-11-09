@@ -3,6 +3,9 @@
 ## Learning Goals
 
 - Build RESTful APIs that are easy to navigate and use in applications.
+- Develop a Flask API with successful frontend connections via `fetch()`.
+- Integrate create and retrieve routes with the associated actions to return
+  the appropriate JSON data.
 
 ***
 
