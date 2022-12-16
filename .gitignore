@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 .pytest_cache
 .venv
 instance
-=======
 server/instance
->>>>>>> fae52ed (update db location)

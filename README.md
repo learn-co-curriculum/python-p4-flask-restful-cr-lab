@@ -44,10 +44,7 @@ API so that the `fetch` requests on the frontend work successfully.
 ***
 
 ## Instructions
-## Instructions
 
-The React application is in the `client` directory. To set it up, from the root
-directory, run:
 The React application is in the `client` directory. To set it up, from the root
 directory, run:
 
@@ -91,7 +88,7 @@ $ npm start --prefix client
 Each application will run on its own port on `localhost`:
 
 - React: [http://localhost:4000](http://localhost:4000)
-- Flask: [http://localhost:3000](http://localhost:5000)
+- Rails: [http://localhost:3000](http://localhost:3000)
 
 Take a look through the components in the `client/src/components/` folder to get
 a feel for what our app does. Note that the `fetch` requests in the frontend (in
@@ -100,9 +97,14 @@ a feel for what our app does. Note that the `fetch` requests in the frontend (in
 ```js
 fetch("/plants");
 // instead of fetch("http://localhost:5000/plants")
+```js
+fetch("/plants");
+// instead of fetch("http://localhost:3000/plants")
 ```
 
 This is because we are [proxying][proxying] these requests to our Flask API.
+This is because we are [proxying][create-react-app proxying] these requests to
+our API.
 
 ***
 
@@ -110,6 +112,7 @@ This is because we are [proxying][proxying] these requests to our Flask API.
 
 ### Model
 
+Create a `Plant` model that matches this specification:
 Create a `Plant` model that matches this specification:
 
 | Column Name | Data Type |

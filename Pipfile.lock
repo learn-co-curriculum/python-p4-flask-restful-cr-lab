@@ -5,8 +5,7 @@
         },
         "pipfile-spec": 6,
         "requires": {
-            "python_version": "3.8.13"
-            "python_version": "3.8.13"
+            "python_version": "3.8"
         },
         "sources": [
             {
@@ -185,8 +184,6 @@
         },
         "mako": {
             "hashes": [
-                "sha256:7fde96466fcfeedb0eed94f187f20b23d85e4cb41444be0e542e2c8c65c396cd",
-                "sha256:c413a086e38cd885088d5e165305ee8eed04e8b3f8f62df343480da0a385735f"
                 "sha256:7fde96466fcfeedb0eed94f187f20b23d85e4cb41444be0e542e2c8c65c396cd",
                 "sha256:c413a086e38cd885088d5e165305ee8eed04e8b3f8f62df343480da0a385735f"
             ],
