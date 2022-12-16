@@ -54,11 +54,13 @@ $ npm install --prefix client
 
 Using `--prefix client` will run the npm command within the `client` directory.
 
-To set up your backend, enter the `server/` directory and run:
+To set up your backend, run:
 
 ```console
-$ pipenv install && pipenv shell
+$ pipenv install; pipenv shell
 ```
+
+Then navigate to the `server/` directory to run your Python code.
 
 To see how the React application and Flask API are interacting, you can run the
 Flask application in one terminal by running:
