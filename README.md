@@ -188,8 +188,13 @@ Response Body
 }
 ```
 
-> **Note: When adding image URLs, you will need to use absolute URLs from the
+> **Note 1: When adding image URLs, you will need to use absolute URLs from the
 > internet; we have only uploaded the two images to this project directory.**
+
+> **Note 2: Due to the structure of the client, you will need to use the
+> `get_json()` method to retrieve data for the create route. When you write
+> your own clients, you can decide whether data is passed to the backend via
+> forms or raw JSON.**
 
 Once all the tests are passing, start up the React app and explore the
 functionality to see how the routes you created are being used.
