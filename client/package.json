@@ -9,8 +9,8 @@
     "react-scripts": "^5.0.1"
   },
   "scripts": {
-    "build": "react-scripts --openssl-legacy-provider build",
-    "start": "react-scripts --openssl-legacy-provider start"
+    "build": "react-scripts build",
+    "start": "react-scripts start"
   },
   "eslintConfig": {
     "extends": [
