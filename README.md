@@ -4,10 +4,10 @@
 
 - Build RESTful APIs that are easy to navigate and use in applications.
 - Develop a Flask API with successful frontend connections via `fetch()`.
-- Integrate create and retrieve routes with the associated actions to return
-  the appropriate JSON data.
+- Integrate create and retrieve routes with the associated actions to return the
+  appropriate JSON data.
 
-***
+---
 
 ## Key Vocab
 
@@ -15,33 +15,33 @@
   applications that use HTTP in a consistent, human-readable, machine-readable
   way.
 - **Application Programming Interface (API)**: a software application that
-  allows two or more software applications to communicate with one another.
-  Can be standalone or incorporated into a larger product.
+  allows two or more software applications to communicate with one another. Can
+  be standalone or incorporated into a larger product.
 - **HTTP Request Method**: assets of HTTP requests that tell the server which
   actions the client is attempting to perform on the located resource.
 - **`GET`**: the most common HTTP request method. Signifies that the client is
   attempting to view the located resource.
 - **`POST`**: the second most common HTTP request method. Signifies that the
   client is attempting to submit a form to create a new resource.
-- **`PATCH`**: an HTTP request method that signifies that the client is attempting
-  to update a resource with new information.
+- **`PATCH`**: an HTTP request method that signifies that the client is
+  attempting to update a resource with new information.
 - **`PUT`**: an HTTP request method that signifies that the client is attempting
   to update a resource with new information contained in a complete record.
 - **`DELETE`**: an HTTP request method that signifies that the client is
   attempting to delete a resource.
 
-***
+---
 
 ## Introduction
 
 In this lab, we'll be building an API for a plant store! In addition to our
-usual Rails code, there is code for a React frontend application in the `client`
+usual Flask code, there is code for a React frontend application in the `client`
 directory.
 
-The code for the frontend application is done. Your job is to create the Rails
+The code for the frontend application is done. Your job is to create the Flask
 API so that the `fetch` requests on the frontend work successfully.
 
-***
+---
 
 ## Instructions
 
@@ -57,14 +57,6 @@ Using `--prefix client` will run the npm command within the `client` directory.
 To set up your backend, run:
 
 ```console
-$ bundle install
-```
-
-To see how the React application and Rails API are interacting, you can run the
-Rails application in one terminal by running:
-
-```console
-$ rails s
 $ pipenv install; pipenv shell
 ```
 
@@ -83,12 +75,13 @@ Then, [open another terminal][new terminal] and run React:
 $ npm start --prefix client
 ```
 
-[new terminal]: https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-terminals
+[new terminal]:
+  https://code.visualstudio.com/docs/editor/integrated-terminal#_managing-terminals
 
 Each application will run on its own port on `localhost`:
 
 - React: [http://localhost:4000](http://localhost:4000)
-- Rails: [http://localhost:3000](http://localhost:3000)
+- Flask: [http://localhost:5555](http://localhost:5555)
 
 Take a look through the components in the `client/src/components/` folder to get
 a feel for what our app does. Note that the `fetch` requests in the frontend (in
@@ -97,22 +90,16 @@ a feel for what our app does. Note that the `fetch` requests in the frontend (in
 ```js
 fetch("/plants");
 // instead of fetch("http://localhost:5000/plants")
-```js
-fetch("/plants");
-// instead of fetch("http://localhost:3000/plants")
 ```
 
 This is because we are [proxying][proxying] these requests to our Flask API.
-This is because we are [proxying][create-react-app proxying] these requests to
-our API.
 
-***
+---
 
 ## Deliverables
 
 ### Model
 
-Create a `Plant` model that matches this specification:
 Create a `Plant` model that matches this specification:
 
 | Column Name | Data Type |
@@ -121,8 +108,8 @@ Create a `Plant` model that matches this specification:
 | image       | string    |
 | price       | decimal   |
 
-After creating the `Plant` model, you can run `python seed.py` to run
-your migration and add some sample data to your database.
+After creating the `Plant` model, you can run `python seed.py` to run your
+migration and add some sample data to your database.
 
 ### Routes
 
@@ -171,9 +158,6 @@ Response Body
 
 #### Create Route
 
-In your controller's `create` action, use strong params when creating the new
-`Plant` object.
-
 ```txt
 POST /plants
 
@@ -202,8 +186,13 @@ Response Body
 }
 ```
 
-> **Note: When adding image URLs, you will need to use absolute URLs from the
+> **Note 1: When adding image URLs, you will need to use absolute URLs from the
 > internet; we have only uploaded the two images to this project directory.**
+
+> **Note 2: Due to the structure of the client, you will need to use the
+> `get_json()` method to retrieve data for the create route. When you write your
+> own clients, you can decide whether data is passed to the backend via forms or
+> raw JSON.**
 
 Once all the tests are passing, start up the React app and explore the
 functionality to see how the routes you created are being used.
@@ -216,4 +205,5 @@ functionality to see how the routes you created are being used.
 - [Proxying API Requests in Development - React][proxying]
 
 [frest]: https://flask-restful.readthedocs.io/en/latest/
-[proxying]: https://create-react-app.dev/docs/proxying-api-requests-in-development/
+[proxying]:
+  https://create-react-app.dev/docs/proxying-api-requests-in-development/
