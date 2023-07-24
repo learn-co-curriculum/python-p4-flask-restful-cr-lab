@@ -62,9 +62,31 @@ $ pipenv install; pipenv shell
 
 Then navigate to the `server/` directory to run your Python code.
 
-To see how the React application and Flask API are interacting, you can run the
-Flask application in one terminal by running:
+First, you will need to set up your database. Go ahead and run the following commands:
 
+1. Create the table
+```console
+$ flask db upgrade head
+```
+2. Add columns to the table 
+```console
+$ flask db revision --autogenerate -m'add columns to table'
+```
+3. Upgrade table configuration in the db
+```console
+$ flask db upgrade head
+```
+4. Seed the database
+```console
+$ python seed.py
+```
+
+To see how the React application and Flask API are interacting, first, you will need to set the default port number to match the proxy setup in the client's package.json. In this case, the port number is 5555.
+```console
+export FLASK_RUN_PORT=5555
+```
+
+Now you can run the Flask application in one terminal by running:
 ```console
 $ flask run
 ```
