@@ -62,31 +62,23 @@ $ pipenv install; pipenv shell
 
 Then navigate to the `server/` directory to run your Python code.
 
-First, you will need to set up your database. Go ahead and run the following commands:
+First, you will need to set up your database. Go ahead and run the following
+command to create the `instance/app.db` database file:
 
-1. Create the table
 ```console
 $ flask db upgrade head
 ```
-2. Add columns to the table 
-```console
-$ flask db revision --autogenerate -m'add columns to table'
-```
-3. Upgrade table configuration in the db
-```console
-$ flask db upgrade head
-```
-4. Seed the database
-```console
-$ python seed.py
-```
 
-To see how the React application and Flask API are interacting, first, you will need to set the default port number to match the proxy setup in the client's package.json. In this case, the port number is 5555.
+To see how the React application and Flask API are interacting, first, you will
+need to set the default port number to match the proxy setup in the client's
+package.json. In this case, the port number is 5555.
+
 ```console
 export FLASK_RUN_PORT=5555
 ```
 
 Now you can run the Flask application in one terminal by running:
+
 ```console
 $ flask run
 ```
@@ -122,7 +114,7 @@ This is because we are [proxying][proxying] these requests to our Flask API.
 
 ### Model
 
-Create a `Plant` model that matches this specification:
+Edit the `Plant` model in `models.py` to match this specification:
 
 | Column Name | Data Type |
 | ----------- | --------- |
@@ -130,8 +122,26 @@ Create a `Plant` model that matches this specification:
 | image       | string    |
 | price       | decimal   |
 
-After creating the `Plant` model, you can run `python seed.py` to run your
-migration and add some sample data to your database.
+After defining the columns for the `Plant` model and saving the file, do the
+following to update and seed the plant table:
+
+1. Create a revision that tracks your changes to models.py
+
+```console
+$ flask db revision --autogenerate -m'add columns to table'
+```
+
+2. Upgrade the db to the latest revision
+
+```console
+$ flask db upgrade head
+```
+
+3. Seed the database
+
+```console
+$ python seed.py
+```
 
 ### Routes
 
